@@ -148,16 +148,61 @@ public class Person {
     let firstName: String
     let lastName: String
     let age: Int
+    var job: Job?
+    var spouse: Person?
     
     public init(firstName: String, lastName: String, age: Int){
         self.firstName = firstName
         self.lastName = lastName
         self.age = age
+        self.job = nil
+        self.spouse =  nil
     }
-}
-
-////////////////////////////////////
-// Family
-//
-public class Family {
+    
+    //[Person: firstName: Ted lastName: Neward age: 45 job: Salary(1000) spouse: Charlotte]
+    func toString() -> String {
+        var result = "Person: firstName: \(firstName) lastName: \(lastName) age: \(age)"
+        //if job doesnt exist
+        if let xjob = job {
+            result += "job: \(xjob)"
+        }
+        //if spouse doesnt exist
+        if let xspouse = spouse {
+            result += "spouse \(xspouse)"
+        }
+        return result
+    }
+    
+    ////////////////////////////////////
+    // Family
+    //
+    public class Family {
+        var members: [Person]
+        
+        public init(spouse1: Person, spouse2: Person){
+            self.members = []
+            if spouse1.spouse == nil && spouse2.spouse == nil {
+                spouse1.spouse = spouse2
+                spouse2.spouse = spouse1
+                self.members = [spouse1, spouse2]
+            }
+        }
+        func haveChild(_ child: Person) -> Bool {
+            if members[0].age >= 21 || members[1].age >= 21 {
+                members.append(child)
+                return true
+            }
+            return false
+        }
+        
+        func householdIncome() -> Int {
+            var income = 0
+            for x in members {
+                if let job = x.job {
+                    income += job.calculateIncome(50)
+                }
+            }
+            return income
+        }
+    }
 }
