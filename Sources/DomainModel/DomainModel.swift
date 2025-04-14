@@ -148,8 +148,20 @@ public class Person {
     let firstName: String
     let lastName: String
     let age: Int
-    var job: Job?
-    var spouse: Person?
+    var job: Job? {
+        didSet {
+            if age < 16 {
+                job = nil
+            }
+        }
+    }
+    var spouse: Person? {
+        didSet {
+            if age < 18 {
+                spouse = nil
+            }
+        }
+    }
     
     public init(firstName: String, lastName: String, age: Int){
         self.firstName = firstName
@@ -161,30 +173,35 @@ public class Person {
     
     //[Person: firstName: Ted lastName: Neward age: 45 job: Salary(1000) spouse: Charlotte]
     func toString() -> String {
-        var result = "Person: firstName: \(firstName) lastName: \(lastName) age: \(age)"
+        var result = "[Person: firstName:\(firstName) lastName:\(lastName) age:\(age)"
         //if job doesnt exist
         if let xjob = job {
-            result += "job: \(xjob)"
+            result += " job:\(xjob.title)"
+        } else {
+            result += " job:nil"
         }
         //if spouse doesnt exist
         if let xspouse = spouse {
-            result += "spouse \(xspouse)"
+            result += " spouse\(xspouse.firstName)]"
+        } else {
+            result += " spouse:nil]"
         }
         return result
     }
-    
+}
     ////////////////////////////////////
     // Family
     //
     public class Family {
         var members: [Person]
         
-        public init(spouse1: Person, spouse2: Person){
-            self.members = []
+        init(spouse1: Person, spouse2: Person){
             if spouse1.spouse == nil && spouse2.spouse == nil {
                 spouse1.spouse = spouse2
                 spouse2.spouse = spouse1
                 self.members = [spouse1, spouse2]
+            } else {
+                self.members = []
             }
         }
         func haveChild(_ child: Person) -> Bool {
@@ -199,10 +216,10 @@ public class Person {
             var income = 0
             for x in members {
                 if let job = x.job {
-                    income += job.calculateIncome(50)
+                    income += job.calculateIncome(2000)
                 }
             }
             return income
         }
     }
-}
+
